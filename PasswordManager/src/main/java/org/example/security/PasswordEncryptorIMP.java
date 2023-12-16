@@ -2,6 +2,7 @@ package org.example.security;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -29,10 +30,9 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
 
 
    
-    public String encodeSecretKey(SecretKey key) {
+    public String encodeSecretKey(SecretKeySpec key) {
         // Todo: create a secret key object and return it
-        String keyToString =key.toString();
-        return Base64.getEncoder().encodeToString(keyToString.getBytes());
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
     public SecretKeySpec decodeSecretKey(String key) {
