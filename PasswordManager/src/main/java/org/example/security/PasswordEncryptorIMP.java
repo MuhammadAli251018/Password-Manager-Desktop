@@ -1,6 +1,14 @@
 package org.example.security;
 
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class PasswordEncryptorIMP implements PasswordEncryptor{
 
@@ -11,19 +19,26 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
 
         use this which explains how to decode and encode the key:
         https://stackoverflow.com/questions/5355466/converting-secret-key-into-a-string-and-vice-versa
-        دونت ورري
+        
     */
 
+    // private static final String AES = "AES";
+    // private final Key key;
 
 
-    private SecretKey encodeSecretKey(String key) {
+
+
+   
+    public String encodeSecretKey(SecretKey key) {
         // Todo: create a secret key object and return it
-        return null;
+        String keyToString =key.toString();
+        return Base64.getEncoder().encodeToString(keyToString.getBytes());
     }
 
-    private String decodeSecretKey(SecretKey key) {
+    public SecretKeySpec decodeSecretKey(String key) {
         // Todo: get the string out of the key secret
-        return null;
+        byte[] decodedKey = Base64.getDecoder().decode(key);
+        return new SecretKeySpec(decodedKey,0,decodedKey.length,"AES");
     }
     @Override
     public String encryptPassword(String key, String password) {
@@ -35,5 +50,7 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
     public String decryptPassword(String key, String encryptedPassword) {
         // TODO: Decrypt the encrypt password and return the pass
         return null;
-    }
+    } 
+
+
 }
