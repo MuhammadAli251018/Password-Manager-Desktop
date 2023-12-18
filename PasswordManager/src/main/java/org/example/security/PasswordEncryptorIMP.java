@@ -27,18 +27,19 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
     // private final Key key;
 
 
-
-
-   
-    public String encodeSecretKey(SecretKeySpec key) {
-        // Todo: create a secret key object and return it
-        return Base64.getEncoder().encodeToString(key.getEncoded());
+    public static void main(String[] args) {
     }
 
-    public SecretKeySpec decodeSecretKey(String key) {
-        // Todo: get the string out of the key secret
+   
+    public SecretKeySpec encodeSecretKey(String key) {
+        // Todo: create a secret key object and return it
         byte[] decodedKey = Base64.getDecoder().decode(key);
         return new SecretKeySpec(decodedKey,0,decodedKey.length,"AES");
+    }
+    
+    public String decodeSecretKey(SecretKeySpec key) {
+        // Todo: get the string out of the key secret
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
     @Override
     public String encryptPassword(String key, String password) {
