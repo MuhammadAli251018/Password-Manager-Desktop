@@ -26,20 +26,30 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
     // private static final String AES = "AES";
     // private final Key key;
 
-
+    // testing purpose
     public static void main(String[] args) {
+        PasswordEncryptorIMP imp = new PasswordEncryptorIMP();
+        String encoded = imp.encodeSecretKey("testback");
+        String decoded = imp.decodeSecretKey(encoded);
+        System.out.println(encoded);
+        System.out.println(decoded);
     }
 
    
-    public SecretKeySpec encodeSecretKey(String key) {
+    // public SecretKeySpec encodeSecretKey(String key) {
+    //     // Todo: create a secret key object and return it
+    //     byte[] decodedKey = Base64.getDecoder().decode(key);
+    //     return new SecretKeySpec(decodedKey,0,decodedKey.length,"AES");
+    // }
+    private String encodeSecretKey(String key) {
         // Todo: create a secret key object and return it
-        byte[] decodedKey = Base64.getDecoder().decode(key);
-        return new SecretKeySpec(decodedKey,0,decodedKey.length,"AES");
+        return Base64.getEncoder().encodeToString(key.getBytes());
     }
     
-    public String decodeSecretKey(SecretKeySpec key) {
+    private String decodeSecretKey(String key) {
         // Todo: get the string out of the key secret
-        return Base64.getEncoder().encodeToString(key.getEncoded());
+        byte[] decodedKey = Base64.getDecoder().decode(key);
+        return new String(decodedKey);
     }
     @Override
     public String encryptPassword(String key, String password) {
