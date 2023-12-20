@@ -1,14 +1,9 @@
 package org.example.security;
 
-import java.security.Key;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Base64;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
 public class PasswordEncryptorIMP implements PasswordEncryptor{
@@ -27,15 +22,9 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
     // private final Key key;
 
     // testing purpose
-    public static void main(String[] args) {
-        PasswordEncryptorIMP imp = new PasswordEncryptorIMP();
-        String encoded = imp.encodeSecretKey("testback");
-        String decoded = imp.decodeSecretKey(encoded);
-        System.out.println(encoded);
-        System.out.println(decoded);
-    }
 
-   
+
+
     // public SecretKeySpec encodeSecretKey(String key) {
     //     // Todo: create a secret key object and return it
     //     byte[] decodedKey = Base64.getDecoder().decode(key);
@@ -45,23 +34,35 @@ public class PasswordEncryptorIMP implements PasswordEncryptor{
         // Todo: create a secret key object and return it
         return Base64.getEncoder().encodeToString(key.getBytes());
     }
-    
+
     private String decodeSecretKey(String key) {
         // Todo: get the string out of the key secret
         byte[] decodedKey = Base64.getDecoder().decode(key);
         return new String(decodedKey);
     }
+
+
     @Override
-    public String encryptPassword(String key, String password) {
+    public String encryptPassword(String key, String password) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         // TODO: Encrypt the password and return the encrypted pass
-        return null;
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKey secretKey = new SecretKeySpec(key.getBytes(),"AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] cipherText = cipher.doFinal(password.getBytes());
+
+        return Base64.getEncoder().encodeToString(cipherText);
+
     }
 
     @Override
-    public String decryptPassword(String key, String encryptedPassword) {
+    public String decryptPassword(String key, String encryptedPassword) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         // TODO: Decrypt the encrypt password and return the pass
-        return null;
-    } 
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKey secretKey = new SecretKeySpec(key.getBytes(),"AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
+        return new String(plainText);
+    }
 
 
 }
