@@ -1,46 +1,37 @@
 package org.example.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PDataSourceIMP  implements PDataSource {
 
-    // todo use the PasswordPakcageIOManager instead of this array list
-    private ArrayList<EncryptedPPWithID> packagesWithID = new ArrayList<>();
-
-
-
-    private long getAvailableId() {
-        return packagesWithID.size();
+    public PDataSourceIMP(PasswordPackagesIOManager ioManager) {
+        this.ioManager = ioManager;
     }
 
+    PasswordPackagesIOManager ioManager;
 
     @Override
     public long addNewPassword(EncryptedPasswordPackage password) {
-        long id = getAvailableId();
-        //boolean result = packagesWithID.add();
-        return  0;
+        return ioManager.addNewPassword(password);
     }
 
     @Override
     public boolean updatePassword(long id, EncryptedPasswordPackage newPassword) {
-        return false;
+        return ioManager.updatePassword(id, newPassword);
     }
 
     @Override
     public boolean deletePassword(long id) {
-        return false;
+        return ioManager.deletePassword(id);
     }
 
     @Override
     public EncryptedPasswordPackage getPasswordById(long id) {
-        return null;
+        return ioManager.getPasswordById(id);
     }
 
     @Override
     public List<EncryptedPPWithID> getAllPPSortedById() {
-        //  todo update array
-
-        return packagesWithID;
+        return ioManager.getAllPPSortedById();
     }
 }

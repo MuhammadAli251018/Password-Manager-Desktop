@@ -3,6 +3,7 @@ package org.example.data;
 import java.io.*;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 
 //  todo implement the operation on the packages list
@@ -16,6 +17,8 @@ public class PasswordPackagesIOManager {
     {
         try {
             dataFile = new File(dataFileLocation);
+            if(!updatePackagesWithId())
+                System.out.println("couldn't read stored data");
         } catch (Exception e) {
             System.out.println("Error while creating file object");
         }
@@ -24,11 +27,11 @@ public class PasswordPackagesIOManager {
     private String encodeDataToString() {
         String data = "";
 
-        for (int i = 0; i < packagesWithID.size(); i ++) {
-            data += packagesWithID.get(i).getId() + innerPackageSplitter;
-            data += packagesWithID.get(i).getPasswordPackage().getWebsite() + innerPackageSplitter;
-            data += packagesWithID.get(i).getPasswordPackage().getAccount() + innerPackageSplitter;
-            data += packagesWithID.get(i).getPasswordPackage().getEncryptedPassword() + outerPackageSplitter;
+        for (EncryptedPPWithID encryptedPPWithID : packagesWithID) {
+            data += encryptedPPWithID.getId() + "" + innerPackageSplitter;
+            data += encryptedPPWithID.getPasswordPackage().getWebsite() + innerPackageSplitter;
+            data += encryptedPPWithID.getPasswordPackage().getAccount() + innerPackageSplitter;
+            data += encryptedPPWithID.getPasswordPackage().getEncryptedPassword() + outerPackageSplitter;
         }
 
         return data;
@@ -37,6 +40,7 @@ public class PasswordPackagesIOManager {
         try {
             FileWriter writer = new FileWriter(dataFile);
             writer.write(encodeDataToString());
+            writer.close();
             return true;
         } catch (IOException e) {
             System.out.println("Error while updating file");
@@ -54,6 +58,7 @@ public class PasswordPackagesIOManager {
                 data += temp;
             }
 
+            br.close();
             return data;
         }catch (Exception e) {
             System.out.println("Error while reading data file: " + Arrays.toString(e.getStackTrace()));
@@ -67,7 +72,7 @@ public class PasswordPackagesIOManager {
 
 
         for (int i =0; i < strData.length(); i ++) {
-            if (strData.charAt(i) == splitter) {
+            if (strData.charAt(i) == splitter || i == strData.length() - 1) {
                 strPackages.add(strPackage);
                 strPackage = "";
             }
@@ -82,8 +87,7 @@ public class PasswordPackagesIOManager {
     private LinkedList<EncryptedPPWithID> getPackages(LinkedList<String> strPackages) {
         LinkedList<EncryptedPPWithID> packages = new LinkedList<>();
 
-        for (int i = 0; i < strPackages.size(); i ++) {
-            String strPackage = strPackages.get(i);
+        for (String strPackage : strPackages) {
             LinkedList<String> attributes = splitData(strPackage, innerPackageSplitter);
 
             if (attributes.size() != 4) {
@@ -125,5 +129,52 @@ public class PasswordPackagesIOManager {
         }
     }
 
+    private long getAvailableID() {
+        return packagesWithID.size();
+    }
 
+    public long addNewPassword(EncryptedPasswordPackage password) {
+        long id = getAvailableID();
+        packagesWithID.add(
+                new EncryptedPPWithID(
+                        password,
+                        id
+
+                )
+        );
+
+        if (updateTheFile())
+            return id;
+        else
+            return -1;
+    }
+
+    public boolean updatePassword(long id, EncryptedPasswordPackage newPassword) {
+
+        packagesWithID.add(
+                new EncryptedPPWithID(
+                        newPassword,
+                        id
+                )
+        );
+
+        return updateTheFile();
+    }
+
+    public boolean deletePassword(long id) {
+        if (id < getAvailableID()) {
+            packagesWithID.remove(id);
+            return updateTheFile();
+        }
+        else
+            return false;
+    }
+
+    public  EncryptedPasswordPackage getPasswordById(long id){
+        return packagesWithID.get((int) id).getPasswordPackage();
+    }
+
+    public List<EncryptedPPWithID> getAllPPSortedById() {
+        return packagesWithID;
+    }
 }
