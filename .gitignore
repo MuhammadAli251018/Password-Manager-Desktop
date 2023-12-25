@@ -25,3 +25,4 @@ replay_pid*
 PasswordManager/.idea/gradle.xml
 PasswordManager/.idea/misc.xml
 PasswordManager/data.txt
+PasswordManager/salt.txt

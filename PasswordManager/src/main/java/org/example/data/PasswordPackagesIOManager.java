@@ -17,6 +17,9 @@ public class PasswordPackagesIOManager {
     {
         try {
             dataFile = new File(dataFileLocation);
+            if (!dataFile.exists())
+                dataFile.createNewFile();
+
             if(!updatePackagesWithId())
                 System.out.println("couldn't read stored data");
         } catch (Exception e) {
